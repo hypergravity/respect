@@ -1,0 +1,25 @@
+[project]
+name = "respect"
+description = "REsidual SPECtral neT."
+version = "0.0.1"
+authors = [
+    { name = "Bo Zhang", email = "bozhang@nao.cas.cn" }
+]
+
+dependencies = [
+    "pytorch>=2.0.0",
+    "astropy>=5.1"
+]
+
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel"]
+build-backend = "setuptools.build_meta:__legacy__"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+#[tool.setuptools.package-data]
+#csst_dadel = ["*.toml", ]
