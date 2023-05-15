@@ -7,7 +7,7 @@ authors = [
 ]
 
 dependencies = [
-    "pytorch>=2.0.0",
+    "torch>=2.0.0",
     "astropy>=5.1"
 ]
 
