@@ -10,7 +10,7 @@ def make_dataloader(*args, f_train=.9, batch_size=100, device=None):
     if device is None:
         args = [torch.from_numpy(np.asarray(_, dtype=np.float32)) for _ in args]
     else:
-        args = [torch.from_numpy(np.asarray(_, dtype=np.float32)).cuda(device=device) for _ in args]
+        args = [torch.from_numpy(np.asarray(_, dtype=np.float32)).to(device=device) for _ in args]
 
     # split
     n_sample = args[0].shape[0]
