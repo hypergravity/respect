@@ -180,6 +180,8 @@ class ForwardRespect(nn.Module):
         # train model
         test_loss_best = np.inf
         self.train()
+        t0 = Time.now()
+        t0_epoch = -1
         for i_epoch in range(n_epoch):
             # in each epoch
             self.batch_epoch.append(i_epoch)
@@ -281,16 +283,30 @@ class ForwardRespect(nn.Module):
                     if save:
                         # save state dict
                         joblib.dump(self.state_dict(), self.temp_sd)
+                t1 = Time.now()
+                t1_epoch = i_epoch
 
-                prt_str = f"[Epoch {i_epoch:05d}/{n_epoch:05d}] - {Time.now().isot} - save={save} - test_loss_best={test_loss_best:.7f} - test_loss_current={test_loss_current:.7f}:\n"
+                prt_str = f"[Epoch {i_epoch:05d}/{n_epoch:05d} | {(t1 - t0).sec / (t1_epoch - t0_epoch):.1f} s/epoch]" \
+                          f" - {t1.isot} - save={save}" \
+                          f" - test_loss_best={test_loss_best:.7f}" \
+                          f" - test_loss_current={test_loss_current:.7f}:\n"
                 if self.train_syn:
-                    prt_str += f"(lr_syn={scheduler_syn.get_last_lr()[0]:.7f}) => batch_loss_syn={self.batch_loss_syn[-1]:.7f}, train_loss_syn={self.train_loss_syn[-1]:.7f}, test_loss_syn={self.test_loss_syn[-1]:.7f} \n"
+                    prt_str += f" => (lr_syn={scheduler_syn.get_last_lr()[0]:.1e})" \
+                               f" batch_loss_syn={self.batch_loss_syn[-1]:.7f}," \
+                               f" train_loss_syn={self.train_loss_syn[-1]:.7f}," \
+                               f" test_loss_syn={self.test_loss_syn[-1]:.7f} \n"
                 if self.train_cal:
-                    prt_str += f"(lr_cal={scheduler_cal.get_last_lr()[0]:.7f}) => batch_loss_cal={self.batch_loss_cal[-1]:.7f}, train_loss_cal={self.train_loss_cal[-1]:.7f}, test_loss_cal={self.test_loss_cal[-1]:.7f} \n"
+                    prt_str += f" => (lr_cal={scheduler_cal.get_last_lr()[0]:.1e})" \
+                               f" batch_loss_cal={self.batch_loss_cal[-1]:.7f}," \
+                               f" train_loss_cal={self.train_loss_cal[-1]:.7f}," \
+                               f" test_loss_cal={self.test_loss_cal[-1]:.7f} \n"
                 print(prt_str)
 
                 # iterate best loss
                 test_loss_best = test_loss_current
+                # iterate tic time
+                t0 = t1
+                t0_epoch = t1_epoch
 
             if self.train_syn:
                 scheduler_syn.step()
